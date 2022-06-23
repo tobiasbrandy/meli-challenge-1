@@ -1,15 +1,7 @@
 spring:
-  jersey:
-    servlet:
-      load-on-startup: 1
+  jersey.servlet.load-on-startup: 1
 
-  datasource:
-    driver-class-name: org.postgresql.Driver
-
-  sql:
-    init:
-      mode: always
-      platform: postgres
+  sql.init.mode: always
 
   profiles:
     default: dev

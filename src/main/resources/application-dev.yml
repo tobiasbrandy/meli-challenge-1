@@ -1,5 +1,8 @@
 spring:
   datasource:
+    driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/challenge-meli1
     username: postgres
     password: postgres
+
+  sql.init.platform: postgres

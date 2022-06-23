@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
     "com.tobiasbrandy.challenge.meli1.config",
     "com.tobiasbrandy.challenge.meli1.resources",
     "com.tobiasbrandy.challenge.meli1.services",
+    "com.tobiasbrandy.challenge.meli1.repositories",
 })
 public class MainWebapp {
 
