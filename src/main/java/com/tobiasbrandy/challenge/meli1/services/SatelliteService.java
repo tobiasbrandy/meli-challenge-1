@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import com.tobiasbrandy.challenge.meli1.models.Satellite;
 import com.tobiasbrandy.challenge.meli1.models.SatelliteCom;
+import com.tobiasbrandy.challenge.meli1.services.dtos.SatelliteComDefinitionDto;
+import com.tobiasbrandy.challenge.meli1.services.dtos.SatelliteTriangulationResultDto;
 
 public interface SatelliteService {
 
@@ -28,5 +30,9 @@ public interface SatelliteService {
 
     void deleteAllSatelliteComs();
 
-    void triangulatePosition(final List<SatelliteCom> coms);
+    SatelliteTriangulationResultDto triangulateSatellitesFromNames(final List<String> satellites);
+
+    SatelliteTriangulationResultDto triangulateSatellitesFromComs(final List<SatelliteComDefinitionDto> satellites);
+
+    SatelliteTriangulationResultDto triangulateSatellites(final List<Satellite> satellites);
 }

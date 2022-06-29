@@ -13,6 +13,8 @@ import org.springframework.data.relational.core.conversion.DbActionExecutionExce
 import com.tobiasbrandy.challenge.meli1.models.Satellite;
 import com.tobiasbrandy.challenge.meli1.models.SatelliteCom;
 import com.tobiasbrandy.challenge.meli1.repositories.SatelliteRepository;
+import com.tobiasbrandy.challenge.meli1.services.dtos.SatelliteComDefinitionDto;
+import com.tobiasbrandy.challenge.meli1.services.dtos.SatelliteTriangulationResultDto;
 import com.tobiasbrandy.challenge.meli1.validation.ErrorCodes;
 
 @Named
@@ -91,7 +93,20 @@ public class SatelliteServiceImpl implements SatelliteService {
     }
 
     @Override
-    public void triangulatePosition(final List<SatelliteCom> coms) {
+    public SatelliteTriangulationResultDto triangulateSatellitesFromNames(final List<String> satellites) {
         // TODO(tobi)
+        return null;
+    }
+
+    @Override
+    public SatelliteTriangulationResultDto triangulateSatellitesFromComs(final List<SatelliteComDefinitionDto> satellites) {
+        // TODO(tobi)
+        return null;
+    }
+
+    @Override
+    public SatelliteTriangulationResultDto triangulateSatellites(final List<Satellite> satellites) {
+        // TODO(tobi)
+        return null;
     }
 }

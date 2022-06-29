@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public final class Validate {
     private Validate() {
@@ -48,8 +49,8 @@ public final class Validate {
         boolean ret = false;
         if(value == null) {
             ret = fail(validateNotNullFailed(ptr), errors);
-        } else if(value instanceof Validable) {
-            ret = ((Validable) value).errors(errors, ptr);
+        } else if(value instanceof Validable validableValue) {
+            ret = validableValue.errors(errors, ptr);
         }
         return ret;
     }
@@ -64,7 +65,7 @@ public final class Validate {
 
     public static boolean validatePositiveNumber(final String ptr, final Number value, final Consumer<ErrorEntity> errors) {
         boolean ret = false;
-        if (null == value) {
+        if(null == value) {
             ret = fail(validateNotNullFailed(ptr), errors);
         } else {
             if(value.doubleValue() <= 0) {
@@ -74,13 +75,72 @@ public final class Validate {
         return ret;
     }
 
-    public static boolean validateNotEmpty(final String ptr, final Collection<?> value, final Consumer<ErrorEntity> errors) {
-        boolean ret = false;
-        if (null == value) {
+    public static <T> boolean validateNotEmpty(
+        final String                ptr,
+        final Collection<T>         value,
+        final Function<T, String>   itemName,
+        final Consumer<ErrorEntity> errors
+    ) {
+        final boolean ret;
+        if(null == value) {
+            ret = fail(validateNotNullFailed(ptr), errors);
+        } else if(value.isEmpty()) {
+            ret = fail(validationError(4, ptr, "collection must not be empty"), errors);
+        } else {
+            ret = validateCollectionItems(ptr, value, itemName, errors);
+        }
+        return ret;
+    }
+
+    public static <T> boolean validateLength(
+        final String                ptr,
+        final Collection<T>         value,
+        final int min, final int    max,
+        final Function<T, String>   itemName,
+        final Consumer<ErrorEntity> errors
+    ) {
+        final boolean ret;
+        if(value == null) {
             ret = fail(validateNotNullFailed(ptr), errors);
         } else {
-            if(value.isEmpty()) {
-                ret = fail(validationError(4, ptr, "field must not be empty"), errors);
+            final int size = value.size();
+            if(size < min) {
+                ret = fail(validationError(5, ptr, "collection must be at least of length " + min + ". Size: " + size), errors);
+            } else if(size > max) {
+                ret = fail(validationError(5, ptr, "collection must be at most of length " + max + ". Size: " + size), errors);
+            } else {
+                ret = validateCollectionItems(ptr, value, itemName, errors);
+            }
+        }
+        return ret;
+    }
+
+    public static <T> boolean validateCollectionItems(
+        final String                ptr,
+        final Collection<T>         value,
+        final Function<T, String>   itemName,
+        final Consumer<ErrorEntity> errors
+    ) {
+        boolean ret = false;
+        if(value == null) {
+            ret = fail(validateNotNullFailed(ptr), errors);
+        } else {
+            int i = 0;
+            for(final T item : value) {
+                String str = null;
+                if(itemName != null) {
+                    str = itemName.apply(item);
+                }
+                if(str == null) {
+                    str = Integer.toString(i);
+                }
+                if(item == null) {
+                    ret |= fail(validateNotNullFailed(fieldPtr(ptr, str)), errors);
+                } else if(item instanceof Validable validableItem) {
+                    ret |= validableItem.errors(errors, fieldPtr(ptr, str));
+                }
+
+                i++;
             }
         }
         return ret;

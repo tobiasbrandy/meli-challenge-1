@@ -15,15 +15,17 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.fasterxml.jackson.databind.node.TextNode;
-import com.tobiasbrandy.challenge.meli1.resources.dtos.input.SatellitePositionDto;
-import com.tobiasbrandy.challenge.meli1.resources.dtos.output.PlainSatelliteComDto;
-import com.tobiasbrandy.challenge.meli1.models.Satellite;
-import com.tobiasbrandy.challenge.meli1.resources.dtos.input.SplitSatelliteComDto;
-import com.tobiasbrandy.challenge.meli1.resources.dtos.output.PlainSatelliteDto;
+import com.tobiasbrandy.challenge.meli1.resources.dtos.SatelliteTriangulationRequestDto;
+import com.tobiasbrandy.challenge.meli1.services.dtos.SatellitePositionDto;
+import com.tobiasbrandy.challenge.meli1.resources.projections.PlainSatelliteComProj;
+import com.tobiasbrandy.challenge.meli1.resources.dtos.SplitSatelliteComDto;
+import com.tobiasbrandy.challenge.meli1.resources.projections.PlainSatelliteProj;
 import com.tobiasbrandy.challenge.meli1.services.SatelliteService;
+import com.tobiasbrandy.challenge.meli1.services.dtos.SatelliteTriangulationResultDto;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
@@ -45,15 +47,15 @@ public class SatelliteResource {
 
     @GET
     @Path("/satellites")
-    public List<PlainSatelliteDto> listSatellites() {
-        return PlainSatelliteDto.fromSatellites(satelliteService.listSatellites());
+    public List<PlainSatelliteProj> listSatellites() {
+        return PlainSatelliteProj.fromSatellites(satelliteService.listSatellites());
     }
 
     @GET
     @Path("/satellites/{name}")
-    public PlainSatelliteDto findSatellite(@PathParam("name") final String name) {
+    public PlainSatelliteProj findSatellite(@PathParam("name") final String name) {
         return satelliteService.findSatellite(name)
-            .map(PlainSatelliteDto::fromSatellite)
+            .map(PlainSatelliteProj::fromSatellite)
             .orElseThrow(() -> satelliteNotFound(name))
             ;
     }
@@ -62,14 +64,14 @@ public class SatelliteResource {
     @Path("/satellites/{name}")
     public void createSatellite(@PathParam("name") final String name, final SatellitePositionDto satellitePosition) {
         validOrFail(satellitePosition);
-        satelliteService.createSatellite(name, satellitePosition.positionX(), satellitePosition.positionY());
+        satelliteService.createSatellite(name, satellitePosition.x(), satellitePosition.y());
     }
 
     @PUT
     @Path("/satellites/{name}")
     public void updateSatellite(@PathParam("name") final String name, final SatellitePositionDto satellitePosition) {
         validOrFail(satellitePosition);
-        satelliteService.updateSatellite(name, satellitePosition.positionX(), satellitePosition.positionY());
+        satelliteService.updateSatellite(name, satellitePosition.x(), satellitePosition.y());
     }
 
     @DELETE
@@ -86,15 +88,15 @@ public class SatelliteResource {
 
     @GET
     @Path("/satelliteComs")
-    public List<PlainSatelliteComDto> listSatellitesComs() {
-        return PlainSatelliteComDto.fromSatellites(satelliteService.listSatellites());
+    public List<PlainSatelliteComProj> listSatellitesComs() {
+        return PlainSatelliteComProj.fromSatellites(satelliteService.listSatellites());
     }
 
     @GET
     @Path("/satelliteComs/{satellite}")
-    public PlainSatelliteComDto findSatelliteCom(@PathParam("satellite") final String satellite) {
+    public PlainSatelliteComProj findSatelliteCom(@PathParam("satellite") final String satellite) {
         return satelliteService.findSatelliteCom(satellite)
-            .map(com -> new PlainSatelliteComDto(satellite, com.receivedAt(), com.distance(), com.message()))
+            .map(com -> new PlainSatelliteComProj(satellite, com.receivedAt(), com.distance(), com.message()))
             .orElseThrow(() -> satelliteComNotFound(satellite))
             ;
     }
@@ -121,12 +123,30 @@ public class SatelliteResource {
         satelliteService.deleteAllSatelliteComs();
     }
 
+    /* ------------- Api del challenge ------------- */
+
+    @POST
+    @Path("/topsecret")
+    public SatelliteTriangulationResultDto triangulateSatellitesFromComs(final SatelliteTriangulationRequestDto triangulationReq) {
+        validOrFail(triangulationReq);
+        return satelliteService.triangulateSatellitesFromComs(triangulationReq.satellites());
+    }
+
     @POST
     @Path("/topsecret_split/{satellite_name}")
-    public void publishSatelliteCom2(
+    public void publishSatelliteComStd(
         @PathParam("satellite_name") final String satellite_name,
         final SplitSatelliteComDto satelliteCom
     ) {
         publishSatelliteCom(satellite_name, satelliteCom);
+    }
+
+    /** We add a default satellite list to stick more closely to the challenge */
+    private static final List<String> DEFAULT_SATELLITES = List.of("kenobi", "skywalker", "sato");
+
+    @GET
+    @Path("/topsecret_split")
+    public SatelliteTriangulationResultDto triangulatePosition(@QueryParam("satellites") final List<String> satellites) {
+        return satelliteService.triangulateSatellitesFromNames(satellites == null ? DEFAULT_SATELLITES : satellites);
     }
 }

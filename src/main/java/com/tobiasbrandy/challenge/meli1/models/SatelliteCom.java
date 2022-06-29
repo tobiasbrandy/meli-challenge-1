@@ -17,7 +17,7 @@ public record SatelliteCom(Instant receivedAt, double distance, List<String> mes
 
         ret |= validateNotNull(fieldPtr(ptr,        "receivedAt"),  receivedAt, errors);
         ret |= validatePositiveNumber(fieldPtr(ptr, "distance"),    distance,   errors);
-        ret |= validateNotEmpty(fieldPtr(ptr,       "message"),     message,    errors);
+        ret |= validateNotEmpty(fieldPtr(ptr,       "message"),     message, null, errors);
 
         return ret;
     }
