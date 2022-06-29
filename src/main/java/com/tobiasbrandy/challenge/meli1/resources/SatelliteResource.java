@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -21,6 +22,7 @@ import com.tobiasbrandy.challenge.meli1.resources.dtos.input.SatellitePositionDt
 import com.tobiasbrandy.challenge.meli1.resources.dtos.output.PlainSatelliteComDto;
 import com.tobiasbrandy.challenge.meli1.models.Satellite;
 import com.tobiasbrandy.challenge.meli1.resources.dtos.input.SplitSatelliteComDto;
+import com.tobiasbrandy.challenge.meli1.resources.dtos.output.PlainSatelliteDto;
 import com.tobiasbrandy.challenge.meli1.services.SatelliteService;
 
 @Produces(MediaType.APPLICATION_JSON)
@@ -43,14 +45,15 @@ public class SatelliteResource {
 
     @GET
     @Path("/satellites")
-    public List<Satellite> listSatellites() {
-        return satelliteService.listSatellites();
+    public List<PlainSatelliteDto> listSatellites() {
+        return PlainSatelliteDto.fromSatellites(satelliteService.listSatellites());
     }
 
     @GET
     @Path("/satellites/{name}")
-    public Satellite findSatellite(@PathParam("name") final String name) {
+    public PlainSatelliteDto findSatellite(@PathParam("name") final String name) {
         return satelliteService.findSatellite(name)
+            .map(PlainSatelliteDto::fromSatellite)
             .orElseThrow(() -> satelliteNotFound(name))
             ;
     }
@@ -67,6 +70,18 @@ public class SatelliteResource {
     public void updateSatellite(@PathParam("name") final String name, final SatellitePositionDto satellitePosition) {
         validOrFail(satellitePosition);
         satelliteService.updateSatellite(name, satellitePosition.positionX(), satellitePosition.positionY());
+    }
+
+    @DELETE
+    @Path("/satellites/{name}")
+    public void deleteSatellite(@PathParam("name") final String name) {
+        satelliteService.deleteSatellite(name);
+    }
+
+    @DELETE
+    @Path("/satellites")
+    public void deleteAllSatellites() {
+        satelliteService.deleteAllSatellites();
     }
 
     @GET
@@ -92,6 +107,18 @@ public class SatelliteResource {
     ) {
         validOrFail(satelliteCom);
         satelliteService.publishSatelliteCom(satellite, satelliteCom.distance(), satelliteCom.message());
+    }
+
+    @DELETE
+    @Path("/satelliteComs/{name}")
+    public void deleteSatelliteCom(@PathParam("name") final String name) {
+        satelliteService.deleteSatelliteCom(name);
+    }
+
+    @DELETE
+    @Path("/satelliteComs")
+    public void deleteAllSatellitesComs() {
+        satelliteService.deleteAllSatelliteComs();
     }
 
     @POST

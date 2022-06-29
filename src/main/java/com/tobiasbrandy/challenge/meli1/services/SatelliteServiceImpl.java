@@ -58,6 +58,16 @@ public class SatelliteServiceImpl implements SatelliteService {
     }
 
     @Override
+    public void deleteSatellite(final String satellite) {
+        satelliteRepo.deleteById(satellite);
+    }
+
+    @Override
+    public void deleteAllSatellites() {
+        satelliteRepo.deleteAll();
+    }
+
+    @Override
     public Satellite publishSatelliteCom(final String satellite, final double distance, final List<String> message) {
         final Satellite sat = satelliteRepo.findById(satellite).orElseThrow(() -> ErrorCodes.satelliteNotFound(satellite));
         final SatelliteCom com = new SatelliteCom(clock.instant(), distance, message);
@@ -67,6 +77,17 @@ public class SatelliteServiceImpl implements SatelliteService {
     @Override
     public Optional<SatelliteCom> findSatelliteCom(final String satellite) {
         return satelliteRepo.findById(satellite).map(Satellite::communication);
+    }
+
+    @Override
+    public void deleteSatelliteCom(final String satellite) {
+        final Satellite sat = satelliteRepo.findById(satellite).orElseThrow(() -> ErrorCodes.satelliteNotFound(satellite));
+        satelliteRepo.save(new Satellite(sat.name(), sat.positionX(), sat.positionY(), null));
+    }
+
+    @Override
+    public void deleteAllSatelliteComs() {
+        satelliteRepo.deleteAllComs();
     }
 
     @Override

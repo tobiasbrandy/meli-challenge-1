@@ -7,7 +7,6 @@ import com.tobiasbrandy.challenge.meli1.models.Satellite;
 import com.tobiasbrandy.challenge.meli1.models.SatelliteCom;
 
 public interface SatelliteService {
-    int ERROR_CODE = 700;
 
     Satellite createSatellite(final String name, final long positionX, final long positionY);
 
@@ -17,9 +16,17 @@ public interface SatelliteService {
 
     List<Satellite> listSatellites();
 
+    void deleteSatellite(final String satellite);
+
+    void deleteAllSatellites();
+
     Satellite publishSatelliteCom(final String satellite, final double distance, final List<String> message);
 
     Optional<SatelliteCom> findSatelliteCom(final String satellite);
+
+    void deleteSatelliteCom(final String satellite);
+
+    void deleteAllSatelliteComs();
 
     void triangulatePosition(final List<SatelliteCom> coms);
 }
