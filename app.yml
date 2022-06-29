@@ -1,0 +1,8 @@
+runtime: java17
+
+env_variables:
+  spring_profiles_active: prod
+  GAE_USE_SOCKETS_HTTPLIB : anyvalue
+
+vpc_access_connector:
+  name: projects/challenge-meli-1/locations/southamerica-east1/connectors/vpc-connector-main
