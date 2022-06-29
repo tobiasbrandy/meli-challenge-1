@@ -26,6 +26,9 @@ public final class Validate {
         return ptr + '/' + field;
     }
 
+    public static void fail(final ErrorEntity errorEntity) {
+        throw new ApplicationException(400, errorEntity);
+    }
     public static boolean fail(final ErrorEntity errorEntity, final Consumer<ErrorEntity> errors) {
         if(errors != null) {
             errors.accept(errorEntity);

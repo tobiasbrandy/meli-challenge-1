@@ -26,6 +26,7 @@ import com.tobiasbrandy.challenge.meli1.resources.dtos.SplitSatelliteComDto;
 import com.tobiasbrandy.challenge.meli1.resources.projections.PlainSatelliteProj;
 import com.tobiasbrandy.challenge.meli1.services.SatelliteService;
 import com.tobiasbrandy.challenge.meli1.services.dtos.SatelliteTriangulationResultDto;
+import com.tobiasbrandy.challenge.meli1.validation.Validate;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
@@ -147,6 +148,8 @@ public class SatelliteResource {
     @GET
     @Path("/topsecret_split")
     public SatelliteTriangulationResultDto triangulatePosition(@QueryParam("satellites") final List<String> satellites) {
-        return satelliteService.triangulateSatellitesFromNames(satellites == null ? DEFAULT_SATELLITES : satellites);
+        final List<String> realSatellites = satellites == null ? DEFAULT_SATELLITES : satellites;
+        Validate.validateLength("satellites", realSatellites, 3, 3, null, Validate::fail);
+        return satelliteService.triangulateSatellitesFromNames(realSatellites);
     }
 }

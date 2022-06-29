@@ -1,6 +1,7 @@
 package com.tobiasbrandy.challenge.meli1.services;
 
 import java.time.Clock;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -93,15 +94,44 @@ public class SatelliteServiceImpl implements SatelliteService {
     }
 
     @Override
-    public SatelliteTriangulationResultDto triangulateSatellitesFromNames(final List<String> satellites) {
-        // TODO(tobi)
-        return null;
+    public SatelliteTriangulationResultDto triangulateSatellitesFromNames(final List<String> satelliteNames) {
+        final List<Satellite> satellites = satelliteRepo.findAllById(satelliteNames);
+
+        // Validation
+        if(satellites.size() != 3) {
+            throw ErrorCodes.satellitesForTriangulationNotFound();
+        } else if(satellites.stream().anyMatch(sat -> sat.communication() == null)) {
+            throw ErrorCodes.satellitesComForTriangulationNotFound();
+        }
+
+        return triangulateSatellites(satellites);
     }
 
     @Override
-    public SatelliteTriangulationResultDto triangulateSatellitesFromComs(final List<SatelliteComDefinitionDto> satellites) {
-        // TODO(tobi)
-        return null;
+    public SatelliteTriangulationResultDto triangulateSatellitesFromComs(final List<SatelliteComDefinitionDto> satellitesDef) {
+        final List<Satellite> satellites = satelliteRepo.findAllById(satellitesDef.stream()
+            .map(SatelliteComDefinitionDto::satellite)
+            .toList()
+        );
+
+        // Validation
+        if(satellites.size() != 3) {
+            throw ErrorCodes.satellitesForTriangulationNotFound();
+        }
+
+        // Tenemos que armar los satellites de nuevo para incorporarles la informacion de las coms recibidas, y no las guardadas
+        final List<Satellite> updatedSats = new ArrayList<>(3);
+        for(final Satellite sat : satellites) {
+            final SatelliteCom com = satellitesDef.stream()
+                .filter(def -> def.satellite().equals(sat.name()))
+                .findFirst()
+                .map(def -> new SatelliteCom(clock.instant(), def.distance(), def.message()))
+                .orElseThrow() // Unreachable state
+                ;
+            updatedSats.add(new Satellite(sat.name(), sat.positionX(), sat.positionY(), com));
+        }
+
+        return triangulateSatellites(updatedSats);
     }
 
     @Override

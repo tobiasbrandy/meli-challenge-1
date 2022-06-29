@@ -30,7 +30,7 @@ public interface SatelliteService {
 
     void deleteAllSatelliteComs();
 
-    SatelliteTriangulationResultDto triangulateSatellitesFromNames(final List<String> satellites);
+    SatelliteTriangulationResultDto triangulateSatellitesFromNames(final List<String> satelliteNames);
 
     SatelliteTriangulationResultDto triangulateSatellitesFromComs(final List<SatelliteComDefinitionDto> satellites);
 

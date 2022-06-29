@@ -12,6 +12,8 @@ import com.tobiasbrandy.challenge.meli1.repositories.utils.InsertRepositoryFragm
 public interface SatelliteRepository extends CrudRepository<Satellite, String>, InsertRepositoryFragment<Satellite> {
     List<Satellite> findAll();
 
+    List<Satellite> findAllById(Iterable<String> ids);
+
     @Modifying
     @Query("TRUNCATE ONLY satellite_com")
     void deleteAllComs();
