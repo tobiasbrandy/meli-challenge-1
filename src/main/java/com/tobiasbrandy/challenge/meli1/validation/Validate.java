@@ -23,7 +23,7 @@ public final class Validate {
     }
 
     public static String fieldPtr(final String ptr, final String field) {
-        return ptr + '/' + field;
+        return field + '/' + ptr;
     }
 
     public static void fail(final ErrorEntity errorEntity) {
