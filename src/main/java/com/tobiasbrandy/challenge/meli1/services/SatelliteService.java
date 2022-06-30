@@ -10,9 +10,9 @@ import com.tobiasbrandy.challenge.meli1.services.dtos.SatelliteTriangulationResu
 
 public interface SatelliteService {
 
-    Satellite createSatellite(final String name, final long positionX, final long positionY);
+    Satellite createSatellite(final String name, final double positionX, final double positionY);
 
-    Satellite updateSatellite(final String name, final long positionX, final long positionY);
+    Satellite updateSatellite(final String name, final double positionX, final double positionY);
 
     Optional<Satellite> findSatellite(final String name);
 

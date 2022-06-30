@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS satellite (
     name        varchar(100)    primary key,
-    position_x  integer         not null,
-    position_y  integer         not null
+    position_x  numeric(6, 2)   not null,
+    position_y  numeric(6, 2)   not null
 );
 
 CREATE TABLE IF NOT EXISTS satellite_com (

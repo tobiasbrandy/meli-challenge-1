@@ -65,14 +65,14 @@ public class SatelliteResource {
     @Path("/satellites/{name}")
     public void createSatellite(@PathParam("name") final String name, final SatellitePositionDto satellitePosition) {
         validOrFail(satellitePosition);
-        satelliteService.createSatellite(name, satellitePosition.x(), satellitePosition.y());
+        satelliteService.createSatellite(name, satellitePosition.positionX(), satellitePosition.positionY());
     }
 
     @PUT
     @Path("/satellites/{name}")
     public void updateSatellite(@PathParam("name") final String name, final SatellitePositionDto satellitePosition) {
         validOrFail(satellitePosition);
-        satelliteService.updateSatellite(name, satellitePosition.x(), satellitePosition.y());
+        satelliteService.updateSatellite(name, satellitePosition.positionX(), satellitePosition.positionY());
     }
 
     @DELETE

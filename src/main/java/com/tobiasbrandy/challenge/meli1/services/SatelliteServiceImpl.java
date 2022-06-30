@@ -33,7 +33,7 @@ public class SatelliteServiceImpl implements SatelliteService {
     }
 
     @Override
-    public Satellite createSatellite(final String name, final long positionX, final long positionY) {
+    public Satellite createSatellite(final String name, final double positionX, final double positionY) {
         try {
             return satelliteRepo.insert(new Satellite(name, positionX, positionY, null));
         } catch(final DbActionExecutionException e) {
@@ -42,7 +42,7 @@ public class SatelliteServiceImpl implements SatelliteService {
     }
 
     @Override
-    public Satellite updateSatellite(final String name, final long positionX, final long positionY) {
+    public Satellite updateSatellite(final String name, final double positionX, final double positionY) {
         try {
             return satelliteRepo.update(new Satellite(name, positionX, positionY, null));
         } catch(final DbActionExecutionException e) {
@@ -110,7 +110,7 @@ public class SatelliteServiceImpl implements SatelliteService {
     @Override
     public SatelliteTriangulationResultDto triangulateSatellitesFromComs(final List<SatelliteComDefinitionDto> satellitesDef) {
         final List<Satellite> satellites = satelliteRepo.findAllById(satellitesDef.stream()
-            .map(SatelliteComDefinitionDto::satellite)
+            .map(SatelliteComDefinitionDto::name)
             .toList()
         );
 
@@ -123,7 +123,7 @@ public class SatelliteServiceImpl implements SatelliteService {
         final List<Satellite> updatedSats = new ArrayList<>(3);
         for(final Satellite sat : satellites) {
             final SatelliteCom com = satellitesDef.stream()
-                .filter(def -> def.satellite().equals(sat.name()))
+                .filter(def -> def.name().equals(sat.name()))
                 .findFirst()
                 .map(def -> new SatelliteCom(clock.instant(), def.distance(), def.message()))
                 .orElseThrow() // Unreachable state

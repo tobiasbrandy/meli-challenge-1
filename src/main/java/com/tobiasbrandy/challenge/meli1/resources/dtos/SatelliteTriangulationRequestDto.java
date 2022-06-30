@@ -18,7 +18,7 @@ public record SatelliteTriangulationRequestDto(List<SatelliteComDefinitionDto> s
 
         ret |= validateLength(fieldPtr(ptr, "distance"), satellites,
             3, 3,
-            SatelliteComDefinitionDto::satellite,
+            SatelliteComDefinitionDto::name,
             errors
         );
 

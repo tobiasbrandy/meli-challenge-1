@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 import com.tobiasbrandy.challenge.meli1.validation.ErrorEntity;
 import com.tobiasbrandy.challenge.meli1.validation.Validable;
 
-public record SatelliteTriangulationResultDto(SatellitePositionDto position, String message) implements Validable {
+public record SatelliteTriangulationResultDto(SpaceshipPositionDto position, String message) implements Validable {
 
     @Override
     public boolean errors(final Consumer<ErrorEntity> errors, final String ptr) {

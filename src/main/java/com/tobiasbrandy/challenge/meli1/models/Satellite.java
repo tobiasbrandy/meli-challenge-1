@@ -10,7 +10,7 @@ import org.springframework.data.annotation.Id;
 import com.tobiasbrandy.challenge.meli1.validation.ErrorEntity;
 import com.tobiasbrandy.challenge.meli1.validation.Validable;
 
-public record Satellite(@Id String name, long positionX, long positionY, SatelliteCom communication) implements Validable {
+public record Satellite(@Id String name, double positionX, double positionY, SatelliteCom communication) implements Validable {
 
     @Override
     public boolean errors(final Consumer<ErrorEntity> errors, final String ptr) {
