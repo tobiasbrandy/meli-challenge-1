@@ -37,11 +37,11 @@
       <artifactId>spring-boot-starter-jetty</artifactId>
     </dependency>
   
-  
-    <!--  Validation  -->
+    <!--  Trilateration library  -->
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-validation</artifactId>
+      <groupId>com.lemmingapex.trilateration</groupId>
+      <artifactId>trilateration</artifactId>
+      <version>1.0.2</version>
     </dependency>
   
     <!-- Database -->

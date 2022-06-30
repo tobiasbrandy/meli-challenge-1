@@ -26,5 +26,8 @@ public final class ErrorCodes {
     public static ApplicationException satellitesComForTriangulationNotFound() {
         return new ApplicationException(404, SATELLITE_COM_ERROR_CODE + 3, "Some satellites chosen for triangulation did not have an associated communication");
     }
+    public static ApplicationException satellitesComMessagesDontMatch() {
+        return new ApplicationException(404, SATELLITE_COM_ERROR_CODE + 4, "Satellites communication messages don't converge into a single message");
+    }
 
 }
